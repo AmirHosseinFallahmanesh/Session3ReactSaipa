@@ -1,0 +1,105 @@
+﻿
+import React, { Component } from 'react'
+export default class PureComponent extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        title: "فیلم ایرانی",
+        isReleased: true
+      };
+    }
+  
+    toogleRelease = () => {
+      console.log("تغییر");
+      this.setState((prevState) => ({
+        isReleased: !prevState.isReleased
+      }));
+    };
+  
+    render() {
+      const { title, isReleased } = this.state;
+      return (
+        <>
+          <MovieTitle title={title} />
+          <h1>منشر شده: {isReleased ? "yes" : "no"} </h1>
+          <button onClick={this.toogleRelease}>تغییر وضعیت انتشار</button>
+        </>
+      );
+    }
+  }
+
+  class MovieTitle extends React.PureComponent {
+    render() {
+      console.log("MovieTitle is rendered");
+      return <h1>نام فیلم {this.props.title} </h1>;
+    }
+  }
+
+  class MovieTitle1 extends React.Component {
+
+    constructor(props){
+        super(props);
+    }
+    shouldComponentUpdate(nextProps, nextState)
+    {
+      
+        if(this.props.title==nextProps.title)
+             return false;
+
+        return true;
+    }
+    render() {
+      console.log("MovieTitle is rendered");
+      return <h1>نام فیلم {this.props.title} </h1>;
+    }
+  }
+
+  -----------------------------------------
+  // import { useState } from 'react';
+// export default function UseMemo1  () {
+//   const [number, setNumber] = useState(1);
+//   const [inc, setInc] = useState(0);
+//   const factorial = factorialOf(number);
+//   const onChange = event => {
+//     setNumber(Number(event.target.value));
+//   };
+//   const onClick = () => setInc(i => i + 1);
+  
+//   return (
+//     <div>
+//       Factorial of 
+//       <input type="number" value={number} onChange={onChange} />
+//       is {factorial}
+//       <button onClick={onClick}>Re-render</button>
+//     </div>
+//   );
+// }
+// function factorialOf(n) {
+//   console.log('factorialOf(n) called!');
+//   return n <= 0 ? 1 : n * factorialOf(n - 1);
+// }
+
+
+import { useState, useMemo } from 'react';
+export default function UseMemo1  () {
+  const [number, setNumber] = useState(1);
+  const [inc, setInc] = useState(0);
+  const factorial = useMemo(() => factorialOf(number), [number]);
+  const onChange = event => {
+    setNumber(Number(event.target.value));
+  };
+  const onClick = () => setInc(i => i + 1);
+  
+  return (
+    <div>
+      Factorial of 
+      <input type="number" value={number} onChange={onChange} />
+      is {factorial}
+      <button onClick={onClick}>Re-render</button>
+    </div>
+  );
+}
+function factorialOf(n) {
+  console.log('factorialOf(n) called!');
+  return n <= 0 ? 1 : n * factorialOf(n - 1);
+}
