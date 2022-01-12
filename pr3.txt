@@ -1,0 +1,146 @@
+import React, { useState, useEffect } from 'react';
+
+const LifeCycleFuncion1 = () => {
+  const [message, setMessage] = useState('Hi there, how are you?');
+
+  useEffect(() => {
+    console.log('trigger use effect hook');
+
+    setTimeout(() => {
+      setMessage("I'm fine, thanks for asking.");
+    }, 4000)
+  },[])
+
+  return <h1>{message}</h1>
+};
+
+export default LifeCycleFuncion1;
+--------------------------------------
+import React, { useState, useEffect } from 'react';
+
+export default function LifeCycleFuncion2() {
+  const [count, setCount] = useState(0);
+
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    console.log("use effect call")
+    document.title = `You clicked ${count} times`;
+  });
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+
+--------------------------------
+import { useEffect, useState } from "react";
+
+const LifeCycleFuncion3 = props => {
+    const [input, setInput] = useState('');
+    const [isValid, setIsValid] = useState(false);
+
+    const inputHandler = e => {
+        setInput(e.target.value);
+    };
+
+    useEffect(() => {
+        console.log('use effect called')
+        if (input.length < 5 || /\d/.test(input)) {
+            setIsValid(false);
+        } else {
+            setIsValid(true);
+        }
+    }, [input]);
+
+    return (
+        <>
+            <hr />
+            <h2>useEffect use case</h2>
+            <h3>Running on state change: validating input field</h3>
+            <form>
+                <label htmlFor="input">Write something (more than 5 non numerical characters is a valid input)</label><br />
+                <input type="text" id="input" autoComplete="off" onChange={inputHandler} style={{ height: '1.5rem', width: '20rem', marginTop: '1rem' }} />
+            </form>
+            <p><span style={isValid ? { backgroundColor: 'lightgreen', padding: '.5rem' } : { backgroundColor: 'lightpink', padding: '.5rem' }}>{isValid ? 'Valid input' : 'Input not valid'}</span></p>
+        </>
+    );
+};
+
+export default LifeCycleFuncion3;
+--------------------------------------------
+import { useEffect, useState } from "react";
+
+const array = [
+    { key: '1', type: 'user', value: 'amir' },
+    { key: '2', type: 'user', value: 'maryam' },
+    { key: '3', type: 'manager', value: 'ali' },
+    { key: '4', type: 'employee', value: 'sina' },
+    { key: '5', type: 'employee', value: 'shima' },
+    { key: '6', type: 'admin', value: 'mahdi' },
+    { key: '7', type: 'guest', value: 'sepehr' },
+    { key: '8', type: 'guest', value: 'pejman' },
+];
+
+const LifeCycleFuncion4 = props => {
+    const [inputValue, setInputValue] = useState('');
+    const [inputType, setInputType] = useState('');
+    const [filteredArray, setFilteredArray] = useState(array);
+
+    const inputValueHandler = e => {
+        setInputValue(e.target.value);
+    };
+
+    const inputTypeHandler = e => {
+        setInputType(e.target.value);
+    };
+
+    useEffect(() => {
+        setFilteredArray(() => {
+            const newArray = array.filter(item => item.value.includes(inputValue)).filter(item => item.type.includes(inputType));
+            return newArray;
+        });
+    }, [inputValue, inputType]);
+
+    // Prepare array to be rendered
+    const listItems = filteredArray.map((item) =>
+        <>
+            <tr>
+                <td style={{ border: '1px solid lightgray', padding: '0 1rem' }}>{item.type}</td>
+                <td style={{ border: '1px solid lightgray', padding: '0 1rem' }} > {item.value}</td>
+            </tr >
+        </>
+    );
+
+    return (
+        <>
+            <hr />
+            <h2>useEffect use case</h2>
+            <h3>Running on state change: live filtering</h3>
+            <form style={{ maxWidth: '23rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                    <label htmlFor="input-type">Filter by <b>type</b></label><br />
+                    <input type="text" id="input-type" autoComplete="off" onChange={inputTypeHandler} style={{ height: '1.5rem', width: '10rem', marginTop: '1rem' }} />
+                </div>
+                <div>
+                    <label htmlFor="input-value">Filter by <b>value</b></label><br />
+                    <input type="text" id="input-value" autoComplete="off" onChange={inputValueHandler} style={{ height: '1.5rem', width: '10rem', marginTop: '1rem' }} />
+                </div>
+            </form>
+            <br />
+            <table style={{ width: '20rem', border: '1px solid gray', padding: '0 1rem' }}>
+                <tr>
+                    <th>Type</th>
+                    <th>Value</th>
+                </tr>
+                {listItems}
+            </table>
+        </>
+    );
+};
+
+export default LifeCycleFuncion4;
